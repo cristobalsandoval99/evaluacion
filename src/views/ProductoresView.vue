@@ -26,6 +26,10 @@ const productores = ref([
 </script>
 
 <style scoped>
+.vista-productores {
+  max-width: 1000px;
+  margin: 0 auto;
+}
 .grid-productores {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

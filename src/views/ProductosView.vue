@@ -2,10 +2,15 @@
   <div class="vista">
     <h1>Catálogo de Productos</h1>
 
-    <!-- Panel de notificación interactiva -->
+    <!-- Panel de notificación interactiva con opción de eliminar -->
     <div v-if="productosInteresados.length > 0" class="panel-interes">
       <h3>🛒 Resumen de Interés ({{ productosInteresados.length }})</h3>
-      <p>Has manifestado interés en: <strong>{{ productosInteresados.map(p => p.nombre).join(', ') }}</strong></p>
+      <ul class="lista-interes">
+        <li v-for="item in productosInteresados" :key="item.id" class="item-interes">
+          <span><strong>{{ item.nombre }}</strong> - {{ item.comuna }} (${{ item.precio.toLocaleString('es-CL') }})</span>
+          <button @click="eliminarInteres(item.id)" class="btn-eliminar" title="Quitar producto">✕</button>
+        </li>
+      </ul>
     </div>
 
     <!-- Filtro por categoría -->
@@ -22,7 +27,7 @@
       </select>
     </div>
 
-    <!-- Escucha del evento manifestar-interes proveniente del hijo -->
+    <!-- Catálogo de productos -->
     <div v-if="productosFiltrados.length > 0" class="grid-productos">
       <ProductoCard
         v-for="item in productosFiltrados"
@@ -61,12 +66,16 @@ const productosFiltrados = computed(() => {
   return productos.value.filter(item => item.categoria === categoriaSeleccionada.value)
 })
 
-// Función receptora del evento del hijo
 const registrarInteres = (producto) => {
   const yaExiste = productosInteresados.value.some(p => p.id === producto.id)
   if (!yaExiste) {
     productosInteresados.value.push(producto)
   }
+}
+
+// Nueva función para eliminar un elemento por su ID
+const eliminarInteres = (id) => {
+  productosInteresados.value = productosInteresados.value.filter(p => p.id !== id)
 }
 </script>
 
@@ -82,6 +91,39 @@ const registrarInteres = (producto) => {
 .panel-interes h3 {
   margin-top: 0;
   margin-bottom: 0.5rem;
+}
+.lista-interes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.item-interes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  border: 1px solid #a5d6a7;
+}
+.btn-eliminar {
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-eliminar:hover {
+  background-color: #c62828;
 }
 .filtro-container {
   margin-bottom: 1.5rem;
