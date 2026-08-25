@@ -2,7 +2,13 @@
   <div class="vista">
     <h1>Catálogo de Productos</h1>
 
-    <!-- Filtro interactivo por categoría -->
+    <!-- Panel de notificación interactiva -->
+    <div v-if="productosInteresados.length > 0" class="panel-interes">
+      <h3>🛒 Resumen de Interés ({{ productosInteresados.length }})</h3>
+      <p>Has manifestado interés en: <strong>{{ productosInteresados.map(p => p.nombre).join(', ') }}</strong></p>
+    </div>
+
+    <!-- Filtro por categoría -->
     <div class="filtro-container">
       <label for="filtro">Filtrar por categoría: </label>
       <select id="filtro" v-model="categoriaSeleccionada">
@@ -16,16 +22,16 @@
       </select>
     </div>
 
-    <!-- Renderizado dinámico condicional -->
+    <!-- Escucha del evento manifestar-interes proveniente del hijo -->
     <div v-if="productosFiltrados.length > 0" class="grid-productos">
       <ProductoCard
         v-for="item in productosFiltrados"
         :key="item.id"
         :producto="item"
+        @manifestar-interes="registrarInteres"
       />
     </div>
 
-    <!-- Mensaje condicional de lista vacía -->
     <div v-else class="mensaje-vacio">
       <p>⚠️ No se encontraron productos disponibles en la categoría seleccionada.</p>
     </div>
@@ -37,6 +43,7 @@ import { ref, computed } from 'vue'
 import ProductoCard from '../components/ProductoCard.vue'
 
 const categoriaSeleccionada = ref('Todas')
+const productosInteresados = ref([])
 
 const productos = ref([
   { id: 1, nombre: 'Miel Multifloral Orgánica', categoria: 'Apicultura', productor: 'Don Mario', comuna: 'San Fabián', precio: 6500 },
@@ -47,16 +54,35 @@ const productos = ref([
   { id: 6, nombre: 'Cantarito de Greda Negra', categoria: 'Artesanía', productor: 'Alfareras de Quinchamalí', comuna: 'Chillán', precio: 12000 }
 ])
 
-// Propiedad computada para filtrar dinámicamente el arreglo
 const productosFiltrados = computed(() => {
   if (categoriaSeleccionada.value === 'Todas') {
     return productos.value
   }
   return productos.value.filter(item => item.categoria === categoriaSeleccionada.value)
 })
+
+// Función receptora del evento del hijo
+const registrarInteres = (producto) => {
+  const yaExiste = productosInteresados.value.some(p => p.id === producto.id)
+  if (!yaExiste) {
+    productosInteresados.value.push(producto)
+  }
+}
 </script>
 
 <style scoped>
+.panel-interes {
+  background-color: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  color: #1b5e20;
+}
+.panel-interes h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
 .filtro-container {
   margin-bottom: 1.5rem;
   display: flex;

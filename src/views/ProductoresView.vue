@@ -1,6 +1,6 @@
 <template>
   <div class="vista">
     <h1>Productores Participantes</h1>
-    <p>Información sobre los productores de Ñuble.</p>
+    <p>Informaciï¿½n sobre los productores de ï¿½uble.</p>
   </div>
 </template>
