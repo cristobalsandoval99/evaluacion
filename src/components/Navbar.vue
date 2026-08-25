@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar">
-    <h2>Mercado Ñuble Digital</h2>
+    <h2>Mercado Ã‘uble Digital</h2>
     <div class="links">
       <router-link to="/">Inicio</router-link>
       <router-link to="/productos">Productos</router-link>
